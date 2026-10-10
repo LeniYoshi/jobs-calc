@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculateur de gains</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Inter:wght@400;500&display=swap">
+<style>
+:root{--bg:#e9eef5;--panel:#fff;--panel2:#f3f6fa;--ink:#14202e;--mute:#5d6f84;--line:#d5deea;--gold:#a96a00;--goldbg:#fff1cc;--xp:#0b7a5a;--xpbg:#d6f5e8;--acc:#4b3fd1;--accbg:#e8e6ff;--onacc:#fff;--grid:rgba(20,32,46,.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c131c;--panel:#15202d;--panel2:#1b2a3b;--ink:#e8eef6;--mute:#8fa2b8;--line:#263749;--gold:#f5bd4f;--goldbg:#2d2410;--xp:#46e0a0;--xpbg:#0f2f25;--acc:#a89cff;--accbg:#272257;--onacc:#0c131c;--grid:rgba(255,255,255,.04)}}
+:root[data-theme="dark"]{--bg:#0c131c;--panel:#15202d;--panel2:#1b2a3b;--ink:#e8eef6;--mute:#8fa2b8;--line:#263749;--gold:#f5bd4f;--goldbg:#2d2410;--xp:#46e0a0;--xpbg:#0f2f25;--acc:#a89cff;--accbg:#272257;--onacc:#0c131c;--grid:rgba(255,255,255,.04)}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;color:var(--ink);font:400 15px/1.45 Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.app{max-width:1720px;margin:0 auto;padding:clamp(10px,1.5vw,22px);display:grid;gap:14px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.ico{width:50px;height:50px;border-radius:14px;background:var(--accbg);border:1.5px solid var(--acc);display:grid;place-items:center;font-size:28px;flex:none}
+h1{font:800 clamp(20px,2.2vw,26px)/1.1 'Bricolage Grotesque',Inter,sans-serif;margin:0;letter-spacing:-.01em}
+.sub{color:var(--mute);margin:2px 0 0;font-size:14px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{display:flex;align-items:center;gap:7px;font:600 14px Inter,sans-serif;padding:8px 13px;border-radius:12px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+.tab span{font-size:17px}
+.tab:hover{border-color:var(--acc)}
+.tab[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+.grid{display:grid;gap:12px;grid-template-areas:"a" "b" "r"}
+.col{display:grid;gap:12px;align-content:start;min-width:0}
+.ca{grid-area:a}.cb{grid-area:b}.cr{grid-area:r}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:11px}
+h2{display:flex;align-items:center;gap:8px;font:700 15px/1.2 'Bricolage Grotesque',Inter,sans-serif;margin:0}
+h2::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--d,var(--acc));flex:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label,.lab{display:block;font-weight:500;font-size:12.5px;color:var(--mute);margin-bottom:4px}
+select,input[type=number]{width:100%;font:500 15px Inter,sans-serif;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px}
+select:disabled{opacity:.5}
+select:focus,input:focus,button:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+.step{display:grid;grid-template-columns:36px 1fr 36px;gap:5px}
+.step input{text-align:center;font:700 17px 'Bricolage Grotesque',Inter,sans-serif;-moz-appearance:textfield;padding:6px}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+button{font:700 18px Inter,sans-serif;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;cursor:pointer}
+button:active{transform:scale(.96)}
+.pets{display:grid;gap:6px}
+.pet{display:flex;align-items:center;gap:9px;font:600 13.5px/1.25 Inter,sans-serif;text-align:left;padding:7px 10px;border-radius:12px;border-left:5px solid var(--rc,var(--line))}
+.pet small{display:block;font-weight:400;color:var(--mute);font-size:12px}
+.pet[aria-pressed=true]{background:var(--accbg);border-top-color:var(--acc);border-right-color:var(--acc);border-bottom-color:var(--acc)}
+.pet .tick{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--line);flex:none;display:grid;place-items:center;font-size:12px}
+.pet[aria-pressed=true] .tick{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+.link{font:600 13px Inter,sans-serif;color:var(--acc);background:none;border:0;padding:0;text-decoration:underline;justify-self:start;align-self:end;margin-bottom:8px}
+.res{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{border-radius:16px;padding:13px 16px 10px;border:1px solid var(--line);background:var(--cb);color:var(--c)}
+.tile.g{--c:var(--gold);--cb:var(--goldbg)}.tile.x{--c:var(--xp);--cb:var(--xpbg)}
+.tile span{font-weight:600;font-size:14px}
+.tile b{display:block;font:800 clamp(26px,5.2vh,44px)/1.05 'Bricolage Grotesque',Inter,sans-serif;margin:4px 0 2px;color:var(--ink);word-break:break-word}
+.tile small{opacity:.9;font-size:12.5px}
+.sp{width:100%;height:clamp(34px,6vh,54px);display:block;margin-top:6px}
+.rate{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rate div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:9px 13px}
+.rate small{display:block;color:var(--mute);font-size:12.5px}
+.rate b{font:800 clamp(17px,2.2vw,22px)/1.2 'Bricolage Grotesque',Inter,sans-serif;word-break:break-word}
+.rate .nt{grid-column:1/-1;color:var(--mute)}
+.note{color:var(--mute);font-size:12px;margin:0}
+.pair{display:grid;grid-template-columns:1fr;gap:12px}
+dl{margin:0}
+dl div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line)}
+dl div:first-child{border-top:0}
+dt{color:var(--mute)}dd{margin:0;font-weight:700;text-align:right}
+.bar,.rng{position:relative;height:12px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--xp);border-radius:99px;transition:width .3s}
+.rng i{position:absolute;top:0;bottom:0;background:var(--acc);border-radius:99px;min-width:8px;transition:left .3s,width .3s}
+.rl{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-top:3px}
+.curve{color:var(--acc)}
+@media (min-width:760px){.grid{grid-template-columns:minmax(300px,380px) minmax(0,1fr);grid-template-areas:"a r" "b r"}.cr{align-self:start}}
+@media (min-width:1100px){.pair{grid-template-columns:1fr 1fr}}
+@media (min-width:1280px) and (min-height:640px){
+ html,body{height:100%;overflow:hidden}
+ .app{height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));grid-template-rows:auto minmax(0,1fr)}
+ .grid{grid-template-columns:minmax(280px,330px) minmax(260px,310px) minmax(0,1fr);grid-template-areas:"a b r";min-height:0}
+ .col{min-height:0;overflow:auto;padding:3px;margin:-3px}
+}
+@media (max-width:759px){.tabs{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px}.tab{flex:none}}
+@media (max-width:420px){.res,.rate{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+[hidden]{display:none!important}.sg{display:grid;gap:10px}
+</style></head><body><main class="app">
+<header class="top"><div class="brand"><div class="ico" id="jico"></div><div><h1>Calculateur de gains</h1><p class="sub" id="hsub"></p></div></div>
+<nav class="tabs" id="tabs" aria-label="Métier"></nav></header>
+<select id="job" hidden></select>
+<div class="grid">
+<div class="col ca">
+<section class="panel"><h2>Choix</h2>
+<div><label for="item">Entrée</label><select id="item"></select></div>
+<div class="two"><div><span class="lab">Niveau actuel</span><div class="step" id="s-cur"></div></div>
+<div><span class="lab">Niveau visé</span><div class="step" id="s-tgt"></div></div></div>
+<div><label for="done">XP déjà gagnée dans le niveau actuel</label><input id="done" type="number" min="0" value="0" inputmode="decimal"></div>
+</section>
+<section class="panel" id="p-tools"><h2 style="--d:var(--mute)">Outils</h2>
+<div class="two" id="r-el"><div id="r-eff"><label for="eff">Efficacité des outils</label><input id="eff" type="number" min="0" max="10" value="7" inputmode="numeric"></div>
+<div id="r-lure"><label for="lure">Appât des cannes</label><input id="lure" type="number" min="0" max="10" value="5" inputmode="numeric"></div></div>
+<div id="r-zone"><label for="zone">Zone de casse (houe 3×1×3 / marteau 3×3×1)</label><select id="zone"><option value="1">Normale (1 bloc par coup)</option><option value="9">3×3 (9 blocs par coup)</option></select></div>
+<div class="sg" id="r-hunt" hidden>
+<div><label for="sw">Épée</label><select id="sw"><option value="lib">Épée de la Liberté (légendaire)</option><option value="bat">Épée du Bataillon (épique)</option><option value="van">Épée vanilla</option></select></div>
+<div class="sg" id="r-van" hidden>
+<div class="two"><div><label for="vmat">Matériau</label><select id="vmat"><option value="netherite">Netherite</option><option value="diamond">Diamant</option><option value="iron">Fer</option><option value="stone">Pierre</option><option value="gold">Or</option><option value="wood">Bois</option></select></div>
+<div><label for="vsw">Affilage</label><input id="vsw" type="number" min="0" max="10" value="3" inputmode="numeric"></div></div>
+<div class="two"><div><label for="vsh">Tranchant</label><input id="vsh" type="number" min="0" max="10" value="5" inputmode="numeric"></div><div><label for="vsm">Châtiment</label><input id="vsm" type="number" min="0" max="10" value="0" inputmode="numeric"></div></div>
+<div class="two"><div><label for="vba">Fléau des arthropodes</label><input id="vba" type="number" min="0" max="10" value="0" inputmode="numeric"></div><div></div></div>
+</div>
+<div><label for="src">Source des mobs</label><select id="src"><option value="s">Spawner (attente du spawn)</option><option value="k">Stack déjà accumulé (vitesse de kill)</option></select></div>
+</div>
+<p class="note" id="tnote"></p>
+</section></div>
+<div class="col cb">
+<section class="panel"><h2 style="--d:var(--xp)">Boosts</h2>
+<div><span class="lab">Pets actifs (<span id="pcount"></span>)</span><div class="pets" id="pets"></div></div>
+<div class="two"><div><span class="lab">Niveau des pets</span><div class="step" id="s-pl"></div></div>
+<div><label for="oa">Autres boosts argent (%)</label><input id="oa" type="number" min="0" value="0" inputmode="decimal"></div></div>
+<div class="two"><div><label for="ox">Autres boosts XP (%)</label><input id="ox" type="number" min="0" value="0" inputmode="decimal"></div>
+<button class="link" id="all" type="button"></button></div>
+</section>
+<section class="panel"><h2 style="--d:var(--gold)">Simulation</h2>
+<div class="two"><div><label for="mod">Boost ou nerf (%)</label><input id="mod" type="number" min="-100" value="0" inputmode="decimal"></div>
+<div><label for="modw">S'applique à</label><select id="modw"><option value="">Argent et XP</option><option value="a">Argent</option><option value="x">XP</option></select></div></div>
+<p class="note">Ex. 20 = boost de 20 %, −15 = nerf de 15 %. Appliqué à la base de l'entrée, avant niveau et boosts.</p>
+</section></div>
+<div class="col cr">
+<section class="res" aria-live="polite">
+<div class="tile g"><span>🪙 Argent</span><b id="money"></b><small id="ma"></small><svg class="sp" id="sg" viewBox="0 0 200 56" preserveAspectRatio="none"></svg></div>
+<div class="tile x"><span>✨ XP</span><b id="xp"></b><small id="mx"></small><svg class="sp" id="sx" viewBox="0 0 200 56" preserveAspectRatio="none"></svg></div>
+</section>
+<section class="rate" id="rate" aria-live="polite"></section>
+<p class="note" id="tn"></p>
+<div class="pair">
+<section class="panel" aria-live="polite"><h2 id="h1"></h2><div id="barw"><div class="bar"><i id="bar"></i></div><p class="note" id="bt" style="margin-top:5px"></p></div><dl id="d1"></dl>
+<div class="curve"><svg class="sp" id="sq" viewBox="0 0 200 56" preserveAspectRatio="none"></svg><p class="note">XP requise par niveau, 1 → 200 (échelle logarithmique)</p></div></section>
+<section class="panel" aria-live="polite"><h2 id="h2" style="--d:var(--xp)"></h2><div><div class="rng"><i id="seg"></i></div><div class="rl"><span>Niv. 1</span><span>Niv. 200</span></div></div><dl id="d2"></dl>
+<p class="note">Estimation : chaque niveau est calculé avec les gains de ce niveau, boosts constants. Courbes : gain par action, niveau 1 → 200 (trait plein : actuel, pointillés : visé).</p></section>
+</div></div></div>
+</main>
+<script>
+const D={"jobs":[{"id":"farmer","name":"Fermier","ka":0.58,"km":0.01,"nj":3,"mal":0.01,"kx":0.08,"kl":0.08,"items":[["Blé",0.107567,0.228459,"b",0,1,1],["Pomme de terre (en cassant)",0.096821,0.205616,"b",0,1,1],["Carotte (en cassant)",0.102195,0.217047,"b",0,1,1],["Betterave",0.086055,0.182775,"b",0,1,1],["Pastèque",0.379845,0.80669,"b",1.0,1,0],["Citrouille",0.379845,0.80669,"b",1.0,1,0],["Canne à sucre (en cassant)",0.250286,0.531564,"b",0,1,0],["Cactus (en cassant)",1.229453,2.611075,"b",0.4,0,0],["Fève de cacao",0.983825,2.089412,"b",0.2,1,0],["Liane (en cassant)",0.330533,0.701971,"b",0.2,1,0],["Champignon brun (en cassant)",0.608718,1.292772,"b",0,1,0],["Champignon rouge (en cassant)",0.608718,1.292772,"b",0,1,0],["Bloc de champignon rouge",0.314352,0.667598,"b",0.2,1,0],["Bloc de champignon brun",0.314352,0.667598,"b",0.2,1,0],["Tige de champignon",0.314352,0.667598,"b",0.2,1,0],["Verrue du Nether (en cassant)",0.058397,0.124027,"b",0,1,1],["Bambou (en cassant)",0.028589,0.060708,"b",1.0,1,0],["Herbe marine",0.608718,1.292772,"b",0,1,0],["Graines de blé",0.01069,0.06709,"u",0,0,0],["Pomme de terre (en plantant)",0.01069,0.06709,"u",0,0,0],["Carotte (en plantant)",0.01069,0.06709,"u",0,0,0],["Graines de betterave",0.01069,0.06709,"u",0,0,0],["Graines de pastèque",0.01069,0.06709,"u",0,0,0],["Graines de citrouille",0.01069,0.06709,"u",0,0,0],["Canne à sucre (en plantant)",0.01069,0.06709,"u",0,0,0],["Cactus (en plantant)",0.01069,0.06709,"u",0,0,0],["Fèves de cacao",0.01069,0.06709,"u",0,0,0],["Liane (en plantant)",0.01069,0.06709,"u",0,0,0],["Champignon brun (en plantant)",0.01069,0.06709,"u",0,0,0],["Champignon rouge (en plantant)",0.01069,0.06709,"u",0,0,0],["Bambou (en plantant)",0.01069,0.06709,"u",0,0,0],["Baies lumineuses (en plantant)",0.001069,0.006709,"u",0,0,0],["Verrue du Nether (en plantant)",0.01069,0.06709,"u",0,0,0],["Baies lumineuses (en récoltant)",0.061583,0.130787,"u",0,0,0]]},{"id":"miner","name":"Mineur","ka":0.58,"km":0.01,"nj":3,"mal":0.01,"kx":0.08,"kl":0.08,"items":[["Roche",0.00265,0.00749,"b",1.5,1,0],["Pierres",0.00053,0.0015,"b",2,1,0],["Andésite",0.07049,0.37336,"b",1.5,1,0],["Diorite",0.07049,0.37336,"b",1.5,1,0],["Granite",0.07049,0.37336,"b",1.5,1,0],["Minerai de charbon",0.08812,0.4667,"b",3,1,0],["Minerai de redstone",0.17624,0.93339,"b",3,1,0],["Minerai de cuivre",0.251775,1.333425,"b",3,1,0],["Minerai de fer",0.16616875,0.880055,"b",3,1,0],["Minerai d'or",0.19386125,1.02672625,"b",3,1,0],["Minerai de lapis-lazuli",0.16919,0.89606,"b",3,1,0],["Minerai de diamant",0.40417,2.14058,"b",3,1,0],["Débris antiques (en cassant)",12,16,"b",30,1,0],["Basalte",0.00859,0.1,"b",1.25,1,0],["Glace Bleue",0.00859,0.1,"b",2.8,1,0],["Débris antiques (en fondant)",1.5,2,"f",0,0,0]]},{"id":"fisherman","name":"Pêcheur","ka":0.58,"km":0.01,"nj":3,"mal":0.01,"kx":0.08,"kl":0.08,"items":[["Morue",1.33458,9.44787,"p",0,0,0],["Saumon",3.20424,22.68354,"p",0,0,0],["Poisson-Globe",6.16263,43.62657,"p",0,0,0],["Poisson Tropicale",40.15809,284.28786,"p",0,0,0],["Nénuphar",1.60212,11.34177,"p",0,0,0],["Bol",1.60212,11.34177,"p",0,0,0],["Cuir",1.60212,11.34177,"p",0,0,0],["Bottes en cuir",1.60212,11.34177,"p",0,0,0],["Chair putéfiée",1.60212,11.34177,"p",0,0,0],["Bâton",1.60212,11.34177,"p",0,0,0],["Ficelle",1.60212,11.34177,"p",0,0,0],["Fiole d'eau",1.60212,11.34177,"p",0,0,0],["Os",1.60212,11.34177,"p",0,0,0],["Poche d'encre",1.60212,11.34177,"p",0,0,0],["Crochet",1.60212,11.34177,"p",0,0,0],["Arc",7.66713,54.27717,"p",0,0,0],["Canne à pêche",7.66713,54.27717,"p",0,0,0],["Étiquette",7.66713,54.27717,"p",0,0,0],["Coquille de nautile",7.66713,54.27717,"p",0,0,0],["Selle",7.66713,54.27717,"p",0,0,0],["Livre Enchanté",7.66713,54.27717,"p",0,0,0],["Carpe",23.80917,168.55023,"p",0,0,0],["Nemo",23.80917,168.55023,"p",0,0,0],["Fugu",23.80917,168.55023,"p",0,0,0],["Perche Jaune",149.99775,1061.86644,"p",0,0,0],["Neon Tetra",149.99775,1061.86644,"p",0,0,0],["Zancle Cornu",149.99775,1061.86644,"p",0,0,0],["Olludian",149.99775,1061.86644,"p",0,0,0]]},{"id":"lumberjack","name":"Bûcheron","ka":0.58,"km":0.01,"nj":3,"mal":0.01,"kx":0.08,"kl":0.08,"items":[["Bûche de chêne (en cassant)",0.33754,3.91733,"b",2.0,1,0],["Bûche de bouleau (en cassant)",0.67508,3.72147,"b",2.0,1,0],["Bûche de sapin (en cassant)",0.54006,0.86223,"b",2.0,1,0],["Bûche d'acajou (en cassant)",0.67508,2.86741,"b",2.0,1,0],["Bûche de chêne noir (en cassant)",0.67508,1.89955,"b",2.0,1,0],["Bûche d'acacia (en cassant)",0.67508,3.88862,"b",2.0,1,0],["Bûche de palétuvier (en cassant)",0.67508,4.1481,"b",2.0,1,0],["Bois de palétuvier",0.67508,4.1481,"b",2.0,1,0],["Bûche de cerisier (en cassant)",0.67508,3.62474,"b",2.0,1,0],["Bûche de chêne pale (en cassant)",0.67508,1.99952,"b",2.0,1,0],["Tige Carman (en cassant)",0.67508,3.72147,"b",2.0,1,0],["Tige biscornue (en cassant)",0.67508,3.72147,"b",2.0,1,0],["Racines de palétuvier",0.74,0.04,"b",0.7,1,0],["Bûche de chêne (en fondant)",0.01719,0.1,"f",0,0,0],["Bûche de chêne écorcée",0.01719,0.1,"f",0,0,0],["Bûche de bouleau (en fondant)",0.01719,0.1,"f",0,0,0],["Bûche de bouleau écorcée",0.01719,0.1,"f",0,0,0],["Bûche de sapin (en fondant)",0.01719,0.1,"f",0,0,0],["Bûche de sapin écorcée",0.01719,0.1,"f",0,0,0],["Bûche d'acajou (en fondant)",0.01719,0.1,"f",0,0,0],["Bûche d'acajou écorcée",0.01719,0.1,"f",0,0,0],["Bûche de chêne noir (en fondant)",0.01719,0.1,"f",0,0,0],["Bûche de chêne noir écorcée",0.01719,0.1,"f",0,0,0],["Bûche d'acacia (en fondant)",0.01719,0.1,"f",0,0,0],["Bûche d'acacia écorcée",0.01719,0.1,"f",0,0,0],["Bûche de palétuvier (en fondant)",0.01719,0.1,"f",0,0,0],["Bûche de palétuvier écorcée",0.01719,0.1,"f",0,0,0],["Bûche de cerisier (en fondant)",0.01719,0.1,"f",0,0,0],["Bûche de cerisier écorcée",0.01719,0.1,"f",0,0,0],["Bûche de chêne pale (en fondant)",0.01719,0.1,"f",0,0,0],["Bûche de chêne pale écorcée",0.01719,0.1,"f",0,0,0],["Tige Carman (en fondant)",0.01719,0.1,"f",0,0,0],["Tige Carman écorcée",0.01719,0.1,"f",0,0,0],["Tige biscornue (en fondant)",0.01719,0.1,"f",0,0,0],["Tige biscornue écorcée",0.01719,0.1,"f",0,0,0],["Bûche de chêne (en écorçant)",0.01719,0.1,"u",0,0,0],["Bûche de bouleau (en écorçant)",0.01719,0.1,"u",0,0,0],["Bûche de sapin (en écorçant)",0.01719,0.1,"u",0,0,0],["Bûche d'acajou (en écorçant)",0.01719,0.1,"u",0,0,0],["Bûche de chêne noir (en écorçant)",0.01719,0.1,"u",0,0,0],["Bûche d'acacia (en écorçant)",0.01719,0.1,"u",0,0,0],["Bûche de palétuvier (en écorçant)",0.01719,0.1,"u",0,0,0],["Bûche de cerisier (en écorçant)",0.01719,0.1,"u",0,0,0],["Bûche de chêne pale (en écorçant)",0.01719,0.1,"u",0,0,0],["Tige Carman (en écorçant)",0.01719,0.1,"u",0,0,0],["Tige biscornue (en écorçant)",0.01719,0.1,"u",0,0,0]]},{"id":"explorer","name":"Explorateur","ka":0.58,"km":0.01,"nj":3,"mal":0.01,"kx":0.08,"kl":0.08,"items":[["Titan 3m",2.93,3.9,"x",0,0,0],["Titan 6m",3.76,5,"x",0,0,0],["Titan 10m",4.59,6.1,"x",0,0,0],["Titan 15m",5.41,7.2,"x",0,0,0],["Bandit (soldat)",1.65,2.2,"x",0,0,0],["Bandit (archer)",1.96,2.6,"x",0,0,0],["Capitaine des bandits",3.83,5.1,"x",0,0,0],["Mercenaire",3.83,5.1,"x",0,0,0],["Soldat Corrompu",4.59,6.1,"x",0,0,0],["Garde Royal",9.1,12.1,"x",0,0,0],["Officier de la Police Militaire",10.91,14.5,"x",0,0,0],["Sanglier Normal",8.42,11.2,"x",0,0,0],["Soldat de mahr",3.01,4,"x",0,0,0],["Sergent de mahr",3.91,5.2,"x",0,0,0],["Titan Mitras 3m rôdeur",1.8,2.4,"x",0,0,0],["Titan Mitras 5m",1.8,2.4,"x",0,0,0],["Titan Mitras 10m",2.56,3.4,"x",0,0,0],["Titan Mitras 15m",3.31,4.4,"x",0,0,0],["Titan Ragako 3m rôdeur",2.93,3.9,"x",0,0,0],["Titan Ragako 5m",3.76,5,"x",0,0,0],["Titan Ragako 10m",4.59,6.1,"x",0,0,0],["Titan Ragako 15m",5.41,7.2,"x",0,0,0],["Titan Trost 3m rôdeur",4.96,6.6,"x",0,0,0],["Titan Trost 5m",5.86,7.8,"x",0,0,0],["Titan Trost 10m",6.77,9,"x",0,0,0],["Titan Trost 15m",7.67,10.2,"x",0,0,0],["Titan Forêt 3m rôdeur",7.14,9.5,"x",0,0,0],["Titan Forêt 5m",8.12,10.8,"x",0,0,0],["Titan Forêt 10m",9.1,12.1,"x",0,0,0],["Titan Forêt 15m",10.08,13.4,"x",0,0,0],["Titan Shiganshina 3m rôdeur",9.48,12.6,"x",0,0,0],["Titan Shiganshina 5m",10.53,14,"x",0,0,0],["Titan Shiganshina 10m",11.58,15.4,"x",0,0,0],["Titan Shiganshina 15m",12.64,16.8,"x",0,0,0],["Titan Dauper 3m rôdeur",11.96,15.9,"x",0,0,0],["Titan Dauper 5m",13.08,17.4,"x",0,0,0],["Titan Dauper 10m",14.21,18.9,"x",0,0,0],["Titan Dauper 15m",15.34,20.4,"x",0,0,0],["Titan du Lac 3m rôdeur",14.59,19.4,"x",0,0,0],["Titan du Lac 5m",15.79,21,"x",0,0,0],["Titan du Lac 10m",17,22.6,"x",0,0,0],["Titan du Lac 15m",18.2,24.2,"x",0,0,0],["Plains Titan 3m",17.3,23,"x",0,0,0],["Plains Titan 6m",18.65,24.8,"x",0,0,0],["Plains Titan 10m",20,26.6,"x",0,0,0],["Plains Titan 15m",21.36,28.4,"x",0,0,0],["Woods Titan 3m",20.3,27,"x",0,0,0],["Woods Titan 6m",21.81,29,"x",0,0,0],["Woods Titan 10m",23.31,31,"x",0,0,0],["Woods Titan 15m",24.82,33,"x",0,0,0],["Highwoods Titan 3m",23.31,31,"x",0,0,0],["Highwoods Titan 6m",24.97,33.2,"x",0,0,0],["Highwoods Titan 10m",26.62,35.4,"x",0,0,0],["Highwoods Titan 15m",28.28,37.6,"x",0,0,0],["Officiers de Garnison",8.8,11.7,"x",0,0,0],["Cultistes de l'Église",20.91,27.8,"x",0,0,0],["Titan Aberrant",6.24,8.3,"x",0,0,0],["Titan Coureur",6.77,9,"x",0,0,0],["Officier de Garnison",8.8,11.7,"x",0,0,0],["Titans Anormal",14.51,19.3,"x",0,0,0],["Sanglier Alpha",17.67,23.5,"x",0,0,0],["Titan Anormal (en tuant · Giantforest)",11.58,15.4,"x",0,0,0],["Plains Titan Narcissus",24.44,32.5,"x",0,0,0],["Woods Titan Bearded",28.2,37.5,"x",0,0,0],["Highwoods Titan Sylvester",32.34,43,"x",0,0,0],["Titan Anormal (en tuant · Mitras)",5.64,7.5,"x",0,0,0],["Titan Mère de Connie",9.18,12.2,"x",0,0,0],["Kenny Ackerman",13.01,17.3,"x",0,0,0],["Sanglier Légendaire",26.09,34.7,"x",0,0,0],["Reiner (Titan Cuirassé)",21.51,28.6,"x",0,0,0],["Rod Reiss (Titan Originel)",34.59,46,"x",0,0,0],["Titan Bestial",22.56,30,"x",0,0,0],["Titan Colossal",22.56,30,"x",0,0,0],["Titan Mâchoire",22.56,30,"x",0,0,0],["Titan Marteau d'Arme",30.08,40,"x",0,0,0],["Titan Charette",22.56,30,"x",0,0,0],["Titan Cuirassé",22.56,30,"x",0,0,0],["Titan Assaillant",22.56,30,"x",0,0,0],["Titan Féminin",22.56,30,"x",0,0,0],["Annie (Titan Féminin)",17.15,22.8,"x",0,0,0],["Plains Titan Harvester",36.1,48,"x",0,0,0],["Woods Titan Hunter",41.36,55,"x",0,0,0],["Highwoods Titan Sequoia",48.88,65,"x",0,0,0]]},{"id":"hunter","name":"Chasseur","ka":0.58,"km":0.01,"nj":3,"mal":0.01,"kx":0.08,"kl":0.08,"items":[["Vache",0.2,1.04,"k",10,0,0],["Cochon",0.23,1.08,"k",10,0,0],["Mouton",0.2,1.04,"k",8,0,0],["Poule",0.2,0.96,"k",4,0,0],["Lapin",0.21,1,"k",3,0,0],["Champineuh",0.24,1.08,"k",10,0,0],["Chèvre",0.27,1.16,"k",10,0,0],["Âne",0.27,1.2,"k",22.5,0,0],["Mule",0.27,1.2,"k",22.5,0,0],["Loup",0.27,1.2,"k",8,0,0],["Ocelot",0.3,1.2,"k",10,0,0],["Renard",0.3,1.3,"k",10,0,0],["Lama",0.32,1.5,"k",22.5,0,0],["Panda",0.34,1.68,"k",20,0,0],["Ours blanc",0.25,1.08,"k",30,0,0],["Dauphin",0.28,1.3,"k",10,0,0],["Poulpe",0.1,0.06,"k",10,0,0],["Poulpe brillant",0.1,0.06,"k",10,0,0],["Grenouille",0.1,0.02,"k",10,0,0],["Golem de neige",0.36,2.4,"k",4,0,0],["Golem de fer",0.37,3.6,"k",100,0,0],["Creeper",0.28,1.3,"k",20,0,0],["Squelette",0.26,1.3,"k",20,1,0],["Araignée",0.26,1.24,"k",16,2,0],["Zombie",0.26,1.24,"k",20,1,0],["Enderman",0.3,1.45,"k",40,0,0],["Blaze",0.32,1.5,"k",20,0,0]]}],"pets":[{"n":"Hitch","r":"COMMON","b":[["lumberjack","e",0.025,20]]},{"n":"Nanaba","r":"COMMON","b":[["hunter","e",0.025,20]]},{"n":"Nifa","r":"COMMON","b":[["farmer","e",0.025,20]]},{"n":"Oluo","r":"COMMON","b":[["fisherman","e",0.025,20]]},{"n":"Rico","r":"COMMON","b":[["miner","e",0.025,20]]},{"n":"Bertholdt","r":"RARE","b":[["fisherman","x",0.05,10],["fisherman","e",0.05,20]]},{"n":"Jean","r":"RARE","b":[["hunter","x",0.05,10],["hunter","e",0.05,20]]},{"n":"Hansi","r":"EPIC","b":[["explorer","x",0.075,10],["explorer","e",0.075,20]]},{"n":"Historia","r":"EPIC","b":[["miner","x",0.075,10],["miner","e",0.075,20]]},{"n":"Erwin","r":"LEGENDARY","b":[["hunter","x",0.1,10],["hunter","e",0.1,20]]},{"n":"Armin","r":"MYTHIC","b":[["all","x",0.15,10],["all","e",0.15,20]]}],"pal":[[1,25,1.54,2.11,0.0774,0.00256,1],[25,50,129,13,-0.546,0.0427,25],[50,75,774,67.9,1.71,0.0171,50],[75,100,3864,212,3.65,0.051,75],[100,125,12252,522,2.89,0.222,100],[125,150,30465,1039,12.4,0.212,125],[150,175,67641,1996,31.6,0.17,150],[175,190,140250,4023,-108,28.1,175],[190,199,269101,16924,931,-21.9,190],[199,201,680000,0,0,0,199]],"maxpets":5,"maxlvl":200},ML=D.maxlvl,$=id=>document.getElementById(id);
+const job=$('job'),item=$('item'),done=$('done'),oa=$('oa'),ox=$('ox');
+const RA={COMMON:'Commun',RARE:'Rare',EPIC:'Épique',LEGENDARY:'Légendaire',MYTHIC:'Mythique'};
+const ICO={farmer:'🌾',miner:'⛏️',fisherman:'🎣',lumberjack:'🪓',explorer:'🧭',hunter:'🏹'};
+const RC={COMMON:'#8a8aa0',RARE:'#3b82f6',EPIC:'#a855f7',LEGENDARY:'#f59e0b',MYTHIC:'#ef4444'};
+let sel=new Set();
+function stepper(id,min,max,val,fn){const e=$(id);e.innerHTML='<button type="button" aria-label="Moins">−</button><input type="number" inputmode="numeric" min="'+min+'" max="'+max+'"><button type="button" aria-label="Plus">+</button>';
+ const i=e.children[1],set=v=>{v=Math.max(min,Math.min(max,Math.round(+v)||min));i.value=v;fn();};
+ e.children[0].onclick=()=>set(+i.value-1);e.children[2].onclick=()=>set(+i.value+1);i.onchange=()=>set(i.value);i.value=val;
+ return {get:()=>Math.max(min,Math.min(max,Math.round(+i.value)||min)),set};}
+const cur=stepper('s-cur',1,ML,1,()=>{if(tgt&&tgt.get()<cur.get())tgt.set(cur.get());calc();});
+const tgt=stepper('s-tgt',1,ML,100,()=>{if(tgt.get()<cur.get())tgt.set(cur.get());calc();});
+const pl=stepper('s-pl',1,20,20,calc);
+function spark(el,fn,L,T,log){const v=[];let mx=0;for(let l=1;l<=ML;l++){let y=fn(l);if(log)y=Math.log10(1+y);v.push(y);if(y>mx)mx=y;}
+ const pts=v.map((y,i)=>(i/(ML-1)*200).toFixed(1)+','+(54-(mx?y/mx:0)*50).toFixed(1)).join(' '),x=l=>((l-1)/(ML-1)*200).toFixed(1);
+ const ln=(l,o)=>'<line x1="'+x(l)+'" x2="'+x(l)+'" y1="0" y2="56" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"'+o+'/>';
+ el.innerHTML='<polygon points="0,56 '+pts+' 200,56" fill="currentColor" fill-opacity=".15"/><polyline points="'+pts+'" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"/>'+ln(L,'')+(T>L?ln(T,' stroke-dasharray="4 3" opacity=".6"'):'');}
+const SW={lib:{sh:6,sm:0,ba:0,sw:3,sp:.15,dm:8},bat:{sh:5,sm:6,ba:6,sw:3,sp:0,dm:8}},MAT={netherite:8,diamond:7,iron:6,stone:5,gold:4,wood:4},SPD=45,SPM=2.5;
+function sword(){const v=$('sw').value;if(v!=='van')return SW[v];const g=id=>Math.max(0,+$(id).value||0);return{sh:g('vsh'),sm:g('vsm'),ba:g('vba'),sw:g('vsw'),sp:0,dm:MAT[$('vmat').value]};}
+function kps(D,h,multi){let s=h,k=0;const N=3000;for(let i=0;i<N;i++){if(D>=s){k++;if(multi){const o=D-s;if(o>=h){k++;s=h;}else s=h-o;}else s=h;}else s-=D;}return k/N;}
+function hunt(it){const w=sword(),h=it[4],D=w.dm+(w.sh>0?.5*w.sh+.5:0)+(it[5]===1?2.5*w.sm:0)+(it[5]===2?2.5*w.ba:0),k=kps(D,h,w.sw>=3),kill=1/(1.6*(1+w.sp))/k,spawn=SPD/SPM,stack=$('src').value==='k';return{D,h,k,kill,spawn,stack,t:stack?kill:Math.max(spawn,kill)};}
+const TNO={farmer:'Zone : blé, carottes, pommes de terre, betteraves, verrues du Nether (houe). L\u2019efficacité sert au temps estimé.',miner:'Zone : marteau 3×3×1 sur les blocs cassés. L\u2019efficacité sert au temps estimé.',lumberjack:'L\u2019efficacité sert au temps estimé.',fisherman:'L\u2019Appât sert au temps estimé.',hunter:'Dégâts = base + Tranchant ; Châtiment sur morts-vivants ; Fléau sur arthropodes (PV vanilla). Affilage III ou plus : 2 mobs du stack par coup.'};
+function timeAct(it,hs){const k=it[3];if(k==='x')return null;if(k==='k')return hs.t;if(k==='u')return .2;if(k==='f')return 10;
+ if(k==='p'){const Lr=Math.max(0,+$('lure').value||0);let s=0;for(let u=100;u<=600;u++)s+=Math.max(0,u-100*Lr);return(s/501+50+16)/20;}
+ const e=Math.max(0,+$('eff').value||0),sp=it[5]?9+(e>0?e*e+1:0):1,dm=it[4]>0?sp/it[4]/30:Infinity;return((dm>=1?1:Math.ceil(1/dm))+4)/20;}
+function dur(s){s=Math.round(s);if(s<60)return s+' s';if(s<3600)return Math.floor(s/60)+' min '+(s%60)+' s';const m=Math.round(s/60);return Math.floor(m/60).toLocaleString('fr-FR')+' h '+String(m%60).padStart(2,'0')+' min';}
+const TN={k:'Spawner : délai moyen entre deux spawns ÷ nombre de mobs par spawn, pour un seul spawner (temps de kill négligé).',b:'Temps de casse pur (outil de base netherite + efficacité), hors déplacements.',u:'Clic droit maintenu (≈ 0,2 s par action), hors déplacements.',f:'Fonte : 10 s par item et par four ; plusieurs fours en parallèle réduisent d\u2019autant.',p:'Durée d\u2019une prise (attente + approche du poisson + réaction). La prise obtenue est aléatoire ; Chance de la mer n\u2019a pas d\u2019effet sur la durée.'};
+function f2(v){if(v>0&&v<0.005)return'<\u00a00,01';return v.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fi(v){return Math.ceil(v-1e-9).toLocaleString('fr-FR');}
+function req(L,kl){if(L<1)return 10;const p=D.pal.find(p=>L>=p[0]&&L<p[1]);if(!p)return NaN;const x=L-p[6];return(p[2]+p[3]*x+p[4]*x*x+p[5]*x*x*x)*(1+(L-1)*kl);}
+const J=()=>D.jobs[job.value];
+const rel=()=>D.pets.map((p,i)=>({p,i})).filter(o=>o.p.b.some(b=>b[0]===J().id||b[0]==='all'));
+function renderPets(){const box=$('pets');box.innerHTML='';
+ rel().forEach(({p,i})=>{const t=p.b.filter(b=>b[0]===J().id||b[0]==='all').map(b=>(b[1]==='e'?'Argent':'XP')+' +'+(b[2]*100).toLocaleString('fr-FR')+' % (niv. '+b[3]+')').join(' · ');
+  const b=document.createElement('button');b.type='button';b.className='pet';b.style.setProperty('--rc',RC[p.r]);b.setAttribute('aria-pressed',sel.has(i));
+  b.innerHTML='<span class="tick">'+(sel.has(i)?'✓':'')+'</span><span>'+p.n+' <small>'+RA[p.r]+' · '+t+'</small></span>';
+  b.onclick=()=>{sel.has(i)?sel.delete(i):sel.add(i);renderPets();calc();};box.appendChild(b);});
+ $('pcount').textContent=sel.size+' / '+D.maxpets;
+ $('all').textContent=sel.size===rel().length?'Tout désactiver':'Tout activer';}
+$('all').onclick=()=>{const r=rel();if(sel.size===r.length)sel.clear();else r.forEach(o=>sel.add(o.i));renderPets();calc();};
+function boosts(){let e=0,x=0;sel.forEach(i=>D.pets[i].b.forEach(b=>{if((b[0]===J().id||b[0]==='all')&&pl.get()>=b[3]){b[1]==='e'?e+=b[2]:x+=b[2];}}));return[e,x];}
+function row(a,b){return'<div><dt>'+a+'</dt><dd>'+b+'</dd></div>';}
+function calc(){
+ const j=J(),it0=j.items[item.value],pc=(+$('mod').value||0)/100,md=$('modw').value,fa=md==='x'?1:Math.max(0,1+pc),fx=md==='a'?1:Math.max(0,1+pc),it=[it0[0],it0[1]*fa,it0[2]*fx,...it0.slice(3)],L=cur.get(),T=tgt.get(),[be,bx]=boosts();
+ const BA=1+be+(+oa.value||0)/100,BX=1+bx+(+ox.value||0)/100;
+ const mA=l=>(1+(l-1)*j.ka-(1+(l-1)*j.km)*((j.nj-1)*j.mal))*BA,mX=l=>(1+(l-1)*j.kx)*BX;
+ const m=it[1]*mA(L),x=it[2]*mX(L),m0=it0[1]*mA(L),x0=it0[2]*mX(L);
+ $('money').textContent=f2(m);$('xp').textContent=f2(x);
+ const jid=j.id,hs=jid==='hunter'?hunt(it):null;
+ $('r-eff').hidden=!['farmer','miner','lumberjack'].includes(jid);$('r-lure').hidden=jid!=='fisherman';$('r-el').hidden=!['farmer','miner','lumberjack','fisherman'].includes(jid);
+ $('r-zone').hidden=!['farmer','miner'].includes(jid);$('r-hunt').hidden=jid!=='hunter';$('r-van').hidden=jid!=='hunter'||$('sw').value!=='van';
+ $('p-tools').hidden=jid==='explorer';$('tnote').textContent=TNO[jid]||'';
+ const hn=hs?'Dégâts : '+f2(hs.D)+' par coup (mob : '+f2(hs.h)+' PV) · '+f2(1/hs.k)+' coup(s) par mob · kill : '+f2(hs.kill)+' s par mob'+(hs.stack?'.':' · spawn : '+f2(hs.spawn)+' s par mob (1 à 4 mobs par spawn, moyenne 2,5 ; délai moyen 45 s) · limité par le '+(hs.kill>hs.spawn?'kill.':'spawn.')):'';
+ const zOk=it[3]==='b'&&(j.id==='miner'||(j.id==='farmer'&&it[6]===1));$('zone').disabled=!zOk;
+ const zk=zOk&&$('zone').value==='9'?9:1,ts=timeAct(it,hs),t=ts==null?null:ts/zk,kp=hs?hs.k:zk;
+ $('rate').innerHTML=t==null?'<div class="nt">⏱ Temps non estimé pour l\u2019Explorateur (mobs custom et spawners variables).</div>':'<div><small>⏱ Temps par action</small><b>'+f2(t)+' s</b>'+(zk>1?'<small>'+f2(ts)+' s par coup de '+zk+' blocs</small>':'')+'</div><div><small>🪙 Argent par heure</small><b>'+f2(m*3600/t)+'</b></div><div><small>✨ XP par heure</small><b>'+f2(x*3600/t)+'</b></div>';
+ $('tn').textContent=t==null?'':(hs?hn:TN[it[3]])+(zk>1?' Zone 3×3 : on suppose que les 9 blocs sont de l\u2019entrée choisie et tous comptés par le plugin.':'');
+ $('jico').textContent=ICO[j.id];$('hsub').textContent=j.name+' · '+it[0]+' · niveau '+L+(pc?' · simulation '+(pc>0?'+':'')+Math.round(pc*10000)/100+' %':'');
+ spark($('sg'),l=>it[1]*mA(l),L,T);spark($('sx'),l=>it[2]*mX(l),L,T);spark($('sq'),l=>req(l,j.kl),L,T,true);
+ $('ma').textContent='par action · boost +'+f2(be*100+(+oa.value||0))+' %'+(zk>1?' · par coup : '+f2(m*zk):'')+(fa!==1?' · avant : '+f2(m0):'');$('mx').textContent='par action · boost +'+f2(bx*100+(+ox.value||0))+' %'+(zk>1?' · par coup : '+f2(x*zk):'')+(fx!==1?' · avant : '+f2(x0):'');
+ const d=Math.max(0,+done.value||0);
+ if(L>=ML){$('h1').textContent='Niveau maximum atteint';$('d1').innerHTML='';}
+ else{const r=Math.max(0,req(L,j.kl)-d);$('h1').textContent='Pour passer au niveau '+(L+1);
+  $('d1').innerHTML=row('XP requise',f2(r))+row('Actions à effectuer',x>0?fi(r/x):'—')+(kp!==1&&x>0?row('Coups à donner',fi(r/x/kp)):'')+row('Argent gagné',x>0?f2(r/x*m):'—')+(t!=null&&x>0?row('Temps estimé',dur(r/x*t)):'');}
+ $('barw').hidden=L>=ML;if(L<ML){const r0=req(L,j.kl),pc=r0>0?Math.min(100,d/r0*100):0;$('bar').style.width=pc+'%';$('bt').textContent=f2(pc)+' % du niveau '+L+' ('+f2(d)+' / '+f2(r0)+' XP)';}
+ $('seg').style.left=((L-1)/(ML-1)*100)+'%';$('seg').style.width=(Math.max(T-L,0)/(ML-1)*100)+'%';
+ $('h2').textContent='Du niveau '+L+' au niveau '+T;
+ if(T<=L)$('d2').innerHTML=row('Choisis un niveau visé supérieur','');
+ else{let X=0,A=0,M=0;for(let l=L;l<T;l++){let r=req(l,j.kl);if(l===L)r=Math.max(0,r-d);const xa=it[2]*mX(l);if(xa>0){const a=r/xa;A+=a;M+=a*it[1]*mA(l);}X+=r;}
+  $('d2').innerHTML=row('XP totale requise',f2(X))+row('Actions à effectuer',x>0?fi(A):'—')+(kp!==1&&x>0?row('Coups à donner',fi(A/kp)):'')+row('Argent gagné au total',x>0?f2(M):'—')+(t!=null&&x>0?row('Temps estimé',dur(A*t)):'');}
+}
+D.jobs.forEach((j,i)=>job.add(new Option(ICO[j.id]+' '+j.name,i)));
+const tabs=$('tabs');
+D.jobs.forEach((j,i)=>{const b=document.createElement('button');b.type='button';b.className='tab';b.innerHTML='<span>'+ICO[j.id]+'</span>'+j.name;b.onclick=()=>{job.value=i;job.onchange();};tabs.appendChild(b);});
+function syncTabs(){Array.from(tabs.children).forEach((b,i)=>b.setAttribute('aria-pressed',String(+job.value===i)));}
+function fill(){item.length=0;J().items.forEach((it,i)=>item.add(new Option(it[0],i)));}
+job.onchange=()=>{sel.clear();fill();renderPets();syncTabs();calc();};
+item.onchange=calc;[done,oa,ox,$('eff'),$('lure'),$('zone'),$('mod'),$('modw'),$('sw'),$('vmat'),$('vsh'),$('vsm'),$('vba'),$('vsw'),$('src')].forEach(e=>e.oninput=calc);
+job.value=0;fill();
+item.value=0;
+renderPets();syncTabs();calc();
+</script></body></html>
